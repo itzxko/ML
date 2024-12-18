@@ -18,7 +18,7 @@ const History = () => {
     <>
       <Navigation />
       <div className="w-full py-10 bg-[#EDEDED]"></div>
-      <div className="w-full min-h-screen bg-[#EDEDED] flex flex-col items-center justify-start p-6 font-DM">
+      <div className="w-full min-h-screen bg-[#EDEDED] flex flex-col items-center justify-start p-4 font-DM">
         <div className="w-full lg:w-3/6 flex flex-col items-center justify-center gap-6">
           <div className="w-full flex flex-row items-center justify-start gap-2">
             <div className="p-2 rounded-full bg-gradient-to-tr from-[#466600] to-[#699900]">
@@ -34,40 +34,28 @@ const History = () => {
           <div className="w-full flex flex-col items-center justify-center gap-4">
             <div className="w-full flex flex-col items-center justify-center p-6 rounded-xl bg-[#FCFCFC] gap-8">
               <div className="w-full flex flex-row items-start justify-between gap-2">
-                <div className="w-full flex flex-col items-start justify-center gap-4">
-                  <div className="w-full flex flex-row items-center justify-start gap-2">
-                    <div className="p-2 rounded-full bg-gradient-to-tr from-[#466600] to-[#699900]">
-                      <RiBardFill size={16} color="white" />
-                    </div>
-
-                    <div className="w-full flex flex-row items-center justify-start gap-1">
-                      <p className="text-xs font-semibold">
-                        Predicted Load Weight:
-                      </p>
-                      <p className="text-xs font-normal">80 tons</p>
-                    </div>
+                <div className="w-3/4 flex flex-col items-start justify-center gap-4">
+                  <div className="max-w-full flex flex-row items-center justify-start px-6 py-3 rounded-full gap-2 bg-gradient-to-tr from-[#466600] to-[#699900]">
+                    <RiBardFill size={16} color="white" />
+                    <p className="text-xs font-normal text-white w-full truncate">
+                      Predicted Load Weight: 80 tonssss
+                    </p>
                   </div>
-                  <div className="w-full flex flex-row items-center justify-start gap-2">
-                    <div className="p-2 rounded-full bg-gradient-to-tr from-[#466600] to-[#699900]">
-                      <RiWindow2Fill size={16} color="white" />
-                    </div>
-
-                    <div className="w-full flex flex-row items-center justify-start gap-1">
-                      <p className="text-xs font-semibold">
-                        Actual Load Weight:
-                      </p>
-                      <p className="text-xs font-normal">N/A</p>
-                    </div>
+                  <div className="flex flex-row items-center justify-start px-6 py-3 rounded-full gap-2 bg-gradient-to-tr from-[#9C7C00] to-[#D2AF26]">
+                    <RiBardFill size={16} color="white" />
+                    <p className="text-xs font-normal text-white">
+                      Actual Load Weight: N/A
+                    </p>
                   </div>
                 </div>
                 <div
-                  className="p-2 rounded-full flex items-center justify-center bg-gradient-to-tr from-[#9C7C00] to-[#D2AF26] cursor-pointer"
+                  className="p-2 rounded-full flex items-center justify-center bg-[#EDEDED] cursor-pointer"
                   onClick={() => setHistoryForm(true)}
                 >
-                  <RiEdit2Line size={16} color="white" />
+                  <RiEdit2Line size={16} color="black" />
                 </div>
               </div>
-              <div className="w-full flex flex-col lg:flex-row gap-6 items-center justify-center">
+              <div className="w-full flex flex-col gap-6 items-center justify-center">
                 <div className="w-full flex flex-col items-start justify-center">
                   <div className="w-full flex flex-col items-start justify-center">
                     <p className="text-xs font-semibold">Bar Chart</p>
@@ -104,6 +92,83 @@ const History = () => {
                     className="w-full"
                     grid={{ vertical: true, horizontal: true }}
                   />
+                </div>
+              </div>
+              <div className="w-full flex flex-col items-center justify-center gap-4">
+                <div className="w-full flex flex-row items-center justify-start">
+                  <p className="text-xs font-semibold">Prediction Data</p>
+                </div>
+                <div className="w-full flex flex-col items-center justify-center gap-1">
+                  <div className="w-full flex flex-row items-center justify-start gap-2 border-b border-black/20 py-2">
+                    <p className="text-xs font-normal text-[#6E6E6E] w-1/2 text-start">
+                      Predicted Load Weight:
+                    </p>
+                    <p className="text-xs font-semibold text-[#466600] w-1/2 text-end">
+                      80tons
+                    </p>
+                  </div>
+                  <div className="w-full flex flex-row items-center justify-start gap-2 border-b border-black/20 py-2">
+                    <p className="text-xs font-normal text-[#6E6E6E] w-1/2 text-start">
+                      Actual Load Weight:
+                    </p>
+                    <p className="text-xs font-semibold text-[#9C7C00] w-1/2 text-end">
+                      N/A
+                    </p>
+                  </div>
+                  <div className="w-full flex flex-row items-center justify-start gap-2 border-b border-black/20 py-2">
+                    <p className="text-xs font-normal text-[#6E6E6E] w-1/2 text-start">
+                      Report Date:
+                    </p>
+                    <p className="text-xs font-semibold  w-1/2 text-end">
+                      05/24/24
+                    </p>
+                  </div>
+                  <div className="w-full flex flex-row items-center justify-start gap-2 border-b border-black/20 py-2">
+                    <p className="text-xs font-normal text-[#6E6E6E] w-1/2 text-start">
+                      Load Time:
+                    </p>
+                    <p className="text-xs font-semibold  w-1/2 text-end">
+                      2:00 P.M.
+                    </p>
+                  </div>
+                  <div className="w-full flex flex-row items-center justify-start gap-2 border-b border-black/20 py-2">
+                    <p className="text-xs font-normal text-[#6E6E6E] w-1/2 text-start">
+                      Temperature:
+                    </p>
+                    <p className="text-xs font-semibold  w-1/2 text-end">
+                      30 C
+                    </p>
+                  </div>
+                  <div className="w-full flex flex-row items-center justify-start gap-2 border-b border-black/20 py-2">
+                    <p className="text-xs font-normal text-[#6E6E6E] w-1/2 text-start">
+                      Wind Speed:
+                    </p>
+                    <p className="text-xs font-semibold w-1/2 text-end">
+                      60 km/h
+                    </p>
+                  </div>
+                  <div className="w-full flex flex-row items-center justify-start gap-2 border-b border-black/20 py-2">
+                    <p className="text-xs font-normal text-[#6E6E6E] w-1/2 text-start">
+                      Humidity:
+                    </p>
+                    <p className="text-xs font-semibold w-1/2 text-end">10%</p>
+                  </div>
+                  <div className="w-full flex flex-row items-center justify-start gap-2 border-b border-black/20 py-2">
+                    <p className="text-xs font-normal text-[#6E6E6E] w-1/2 text-start">
+                      Population:
+                    </p>
+                    <p className="text-xs font-semibold w-1/2 text-end">
+                      286,000
+                    </p>
+                  </div>
+                  <div className="w-full flex flex-row items-center justify-start gap-2 border-b border-black/20 py-2">
+                    <p className="text-xs font-normal text-[#6E6E6E] w-1/2 text-start">
+                      GDP Per Capita:
+                    </p>
+                    <p className="text-xs font-semibold w-1/2 text-end">
+                      $17,500
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
