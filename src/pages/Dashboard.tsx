@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navigation from "../components/Navigation";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { LineChart } from "@mui/x-charts";
@@ -9,6 +9,8 @@ import {
   RiTruckLine,
 } from "react-icons/ri";
 import Result from "../components/prediction/Result";
+import Notification from "../components/Notification";
+import axios from "axios";
 
 const Dashboard = () => {
   const [reportDate, setReportDate] = useState("");
@@ -16,6 +18,7 @@ const Dashboard = () => {
   const [loadWeight, setLoadWeight] = useState("");
   const [temperature, setTemperature] = useState("");
   const [windSpeed, setWindSpeed] = useState("");
+  const [humidity, setHumidity] = useState("");
   const [population, setPopulation] = useState("");
   const [GDP, setGDP] = useState("");
   const [dropoffSite, setDropoffSite] = useState("");
@@ -30,6 +33,10 @@ const Dashboard = () => {
   const [eventOpened, setEventOpened] = useState(false);
 
   const [predictionPage, setPredictionPage] = useState(false);
+  const [notif, setNotif] = useState(false);
+  const [message, setMessage] = useState("");
+  const [data, setData] = useState<any | null>(null);
+  const [input, setInput] = useState<any | null>(null);
 
   const toggleRain = () => {
     if (raining === "No") {
@@ -55,6 +62,74 @@ const Dashboard = () => {
     }
   };
 
+  const generatePrediction = async () => {
+    try {
+      let url = `http://localhost:8080/api/predictions/predict`;
+
+      let response = await axios.post(url, {
+        "Report Date": reportDate,
+        "Load Time": loadTime,
+        "Load Weight": loadWeight,
+        Temperature: temperature,
+        WindSpeed: windSpeed,
+        Humidity: humidity,
+        Population: population,
+        "GDP Per Capita": GDP,
+      });
+
+      if (response.data.success === true) {
+        await setData(response.data.data);
+        setPredictionPage(true);
+      }
+    } catch (error: any) {
+      setNotif(true);
+      setMessage(error.response.data.error);
+    }
+  };
+
+  const setInputs = () => {
+    setInput({
+      reportDate,
+      loadTime,
+      loadWeight,
+      temperature,
+      windSpeed,
+      humidity,
+      population,
+      GDP,
+    });
+  };
+
+  const handleGenerate = () => {
+    if (
+      reportDate &&
+      loadTime &&
+      loadWeight &&
+      temperature &&
+      windSpeed &&
+      humidity &&
+      population &&
+      GDP
+    ) {
+      setInputs();
+      generatePrediction();
+    } else {
+      setNotif(true);
+      setMessage("Missing Fields");
+    }
+  };
+
+  const clearFields = () => {
+    setReportDate("");
+    setLoadTime("");
+    setLoadWeight("");
+    setTemperature("");
+    setWindSpeed("");
+    setHumidity("");
+    setPopulation("");
+    setGDP("");
+  };
+
   return (
     <>
       <Navigation />
@@ -78,8 +153,19 @@ const Dashboard = () => {
               <input
                 type="date"
                 className="w-full text-xs font-normal rounded-xl px-6 py-4 outline-none bg-[#FCFCFC]"
-                value={reportDate}
-                onChange={(e) => setReportDate(e.target.value)}
+                value={
+                  reportDate
+                    ? `${reportDate.split("/")[2]}-${
+                        reportDate.split("/")[0]
+                      }-${reportDate.split("/")[1]}`
+                    : ""
+                }
+                onChange={(e) => {
+                  const rawDate = e.target.value;
+                  const [year, month, day] = rawDate.split("-");
+                  const formattedDate = `${month}/${day}/${year}`;
+                  setReportDate(formattedDate);
+                }}
               />
             </div>
             <div className="w-full flex flex-col items-start justify-center space-y-2">
@@ -87,17 +173,29 @@ const Dashboard = () => {
               <input
                 type="time"
                 className="w-full text-xs font-normal rounded-xl px-6 py-4 outline-none bg-[#FCFCFC]"
-                value={loadTime}
-                onChange={(e) => setLoadTime(e.target.value)}
+                value={loadTime ? loadTime.split(" ")[1] : ""}
+                onChange={(e) => {
+                  const time = e.target.value;
+                  if (reportDate) {
+                    const formattedDateTime = `${reportDate} ${time}`;
+                    setLoadTime(formattedDateTime);
+                  }
+                }}
               />
             </div>
+
             <div className="w-full flex flex-col items-start justify-center space-y-2">
               <p className="text-xs font-normal">Load Weight</p>
               <input
                 type="text"
                 className="w-full text-xs font-normal rounded-xl px-6 py-4 outline-none bg-[#FCFCFC]"
                 value={loadWeight}
-                onChange={(e) => setLoadWeight(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setLoadWeight(value);
+                  }
+                }}
                 placeholder="load weight"
               />
             </div>
@@ -107,7 +205,12 @@ const Dashboard = () => {
                 type="text"
                 className="w-full text-xs font-normal rounded-xl px-6 py-4 outline-none bg-[#FCFCFC]"
                 value={temperature}
-                onChange={(e) => setTemperature(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*\.?\d*$/.test(value)) {
+                    setTemperature(value);
+                  }
+                }}
                 placeholder="temperature"
               />
             </div>
@@ -117,8 +220,28 @@ const Dashboard = () => {
                 type="text"
                 className="w-full text-xs font-normal rounded-xl px-6 py-4 outline-none bg-[#FCFCFC]"
                 value={windSpeed}
-                onChange={(e) => setWindSpeed(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*\.?\d*$/.test(value)) {
+                    setWindSpeed(value);
+                  }
+                }}
                 placeholder="wind speed"
+              />
+            </div>
+            <div className="w-full flex flex-col items-start justify-center space-y-2">
+              <p className="text-xs font-normal">Humidity</p>
+              <input
+                type="text"
+                className="w-full text-xs font-normal rounded-xl px-6 py-4 outline-none bg-[#FCFCFC]"
+                value={humidity}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*\.?\d*$/.test(value)) {
+                    setHumidity(value);
+                  }
+                }}
+                placeholder="humidity"
               />
             </div>
             <div className="w-full flex flex-col items-start justify-center space-y-2">
@@ -127,7 +250,12 @@ const Dashboard = () => {
                 type="text"
                 className="w-full text-xs font-normal rounded-xl px-6 py-4 outline-none bg-[#FCFCFC]"
                 value={population}
-                onChange={(e) => setPopulation(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setPopulation(value);
+                  }
+                }}
                 placeholder="population"
               />
             </div>
@@ -137,11 +265,16 @@ const Dashboard = () => {
                 type="text"
                 className="w-full text-xs font-normal rounded-xl px-6 py-4 outline-none bg-[#FCFCFC]"
                 value={GDP}
-                onChange={(e) => setGDP(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setGDP(value);
+                  }
+                }}
                 placeholder="gdp per capita"
               />
             </div>
-            <div className="w-full flex flex-col items-start justify-center space-y-2">
+            {/* <div className="w-full flex flex-col items-start justify-center space-y-2">
               <p className="text-xs font-normal">Dropoff Site</p>
               <input
                 type="text"
@@ -200,12 +333,12 @@ const Dashboard = () => {
                 <p className="text-xs font-normal">{event}</p>
                 <i className="ri-refresh-line text-sm"></i>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className=" w-full flex items-center justify-end">
             <div
               className="flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-tr from-[#466600] to-[#699900] shadow-xl shadow-black/10 cursor-pointer"
-              onClick={() => setPredictionPage(true)}
+              onClick={() => handleGenerate()}
             >
               <p className="text-xs font-normal text-white">
                 Generate Prediction
@@ -214,7 +347,19 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      {predictionPage && <Result onClose={() => setPredictionPage(false)} />}
+      {predictionPage && (
+        <Result
+          input={input}
+          data={data}
+          onClose={() => {
+            setPredictionPage(false);
+            clearFields();
+          }}
+        />
+      )}
+      {notif && (
+        <Notification message={message} onClose={() => setNotif(false)} />
+      )}
     </>
   );
 };
