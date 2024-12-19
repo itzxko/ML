@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Users from "./pages/Users";
 import History from "./pages/History";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/profile" element={<Profile />} />
       <Route path="/users" element={<Users />} />
       <Route path="/history" element={<History />} />
+      <Route path="/register" element={<Register />} />
     </Routes>
   );
 }

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Logo from "../assets/Bottle_Bot.png";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Notification from "../components/Notification";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,6 +13,26 @@ const Login = () => {
   const [notif, setNotif] = useState(false);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
+
+  const onLogin = async () => {
+    try {
+      let url = `http://localhost:8080/api/users/login`;
+
+      let response = await axios.post(url, {
+        email: email,
+        password: password,
+      });
+
+      if (response.data.success) {
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        navigate("/dashboard");
+      }
+    } catch (error: any) {
+      setNotif(true);
+      setError(true);
+      setMessage(error.response.data.error);
+    }
+  };
 
   return (
     <>
@@ -76,13 +98,27 @@ const Login = () => {
             {/* button */}
             <div
               className="w-full flex flex-row items-center justify-center py-2.5 bg-gradient-to-tr from-[#466600] to-[#699900] rounded-lg cursor-pointer"
-              onClick={() => navigate("/dashboard")}
+              onClick={() => onLogin()}
             >
               <p className="text-xs font-semibold text-white">Login</p>
+            </div>
+            <div className="w-full flex flex-row items-center justify-center gap-1">
+              <p className="text-xs font-normal text-[#6E6E6E]">
+                Dont have an account?
+              </p>
+              <p
+                className="text-xs font-semibold text-[#466600] cursor-pointer"
+                onClick={() => navigate("/register")}
+              >
+                Register
+              </p>
             </div>
           </div>
         </div>
       </div>
+      {notif && (
+        <Notification message={message} onClose={() => setNotif(false)} />
+      )}
     </>
   );
 };

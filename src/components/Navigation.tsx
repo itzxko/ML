@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../assets/Bottle_Bot.png";
+import axios from "axios";
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -8,18 +9,46 @@ const Navigation = () => {
   const [activeRoute, setActiveRoute] = useState("dashboard");
   const location = useLocation();
   const [openNav, setOpenNav] = useState(false);
+  const [userLevel, setUserLevel] = useState("");
+
+  const getUser = async () => {
+    const user = localStorage.getItem("user");
+
+    if (user) {
+      const currentUser = JSON.parse(user);
+
+      if (currentUser) {
+        console.log(currentUser._id);
+        try {
+          let url = `http://localhost:8080/api/users/${currentUser._id}`;
+          console.log(url);
+          let response = await axios.get(url);
+
+          if (response.data.success === true) {
+            setUserName(response.data.user.name);
+            setUserLevel(response.data.user.userLevel);
+          }
+        } catch (error: any) {
+          console.log(error);
+        }
+      }
+    }
+  };
+
+  const onLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
+  };
 
   useEffect(() => {
+    getUser();
+
     if (location.pathname.includes("/dashboard")) {
       setActiveRoute("dashboard");
-    } else if (location.pathname.includes("/monitor")) {
-      setActiveRoute("monitor");
     } else if (location.pathname.includes("/history")) {
       setActiveRoute("history");
     } else if (location.pathname.includes("/users")) {
       setActiveRoute("users");
-    } else if (location.pathname.includes("/redeem")) {
-      setActiveRoute("redeem");
     } else if (location.pathname.includes("/profile")) {
       setActiveRoute("profile");
     }
@@ -70,21 +99,19 @@ const Navigation = () => {
                 <i className="ri-calendar-line text-md text-[#6E6E6E]"></i>
               </div>
             )}
-            {activeRoute === "users" ? (
+            {userLevel !== "user" && (
               <div
                 className="cursor-pointer"
                 onClick={() => navigate("/users")}
               >
-                <i className="ri-user-smile-fill text-md text-[#050301]"></i>
-              </div>
-            ) : (
-              <div
-                className="cursor-pointer"
-                onClick={() => navigate("/users")}
-              >
-                <i className="ri-user-smile-line text-md text-[#6E6E6E]"></i>
+                {activeRoute === "users" ? (
+                  <i className="ri-user-smile-fill text-md text-[#050301]"></i>
+                ) : (
+                  <i className="ri-user-smile-line text-md text-[#6E6E6E]"></i>
+                )}
               </div>
             )}
+
             {activeRoute === "profile" ? (
               <div
                 className="cursor-pointer"
@@ -104,7 +131,7 @@ const Navigation = () => {
           <div className="flex px-3 py-2 cursor-pointer rounded-xl bg-[#FCFCFC] shadow-xl shadow-black/10 space-x-4">
             <i
               className="ri-contract-right-line text-md"
-              onClick={() => navigate("/")}
+              onClick={onLogout}
             ></i>
             <div
               className="flex lg:hidden"

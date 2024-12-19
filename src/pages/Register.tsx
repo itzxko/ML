@@ -1,22 +1,11 @@
+import React, { useState } from "react";
+import { RiEye2Line, RiEyeCloseLine, RiRefreshLine } from "react-icons/ri";
+import Logo from "../assets/Bottle_Bot.png";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import {
-  RiCheckLine,
-  RiCloseLine,
-  RiEye2Line,
-  RiEyeCloseLine,
-  RiFolder6Line,
-  RiRefreshLine,
-} from "react-icons/ri";
-import Notification from "../Notification";
+import Notification from "../components/Notification";
+import { useNavigate } from "react-router-dom";
 
-const UserForm = ({
-  userId,
-  onClose,
-}: {
-  userId: string;
-  onClose: () => void;
-}) => {
+const Register = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -26,56 +15,7 @@ const UserForm = ({
   const [notif, setNotif] = useState(false);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
-
-  const toggleLevel = () => {
-    if (level === "user") {
-      setLevel("admin");
-    } else if (level === "admin") {
-      setLevel("user");
-    }
-  };
-
-  const getUser = async () => {
-    if (userId) {
-      try {
-        let url = `http://localhost:8080/api/users/${userId}`;
-
-        let response = await axios.get(url);
-
-        if (response.data.success === true) {
-          setUserName(response.data.user.name);
-          setLevel(response.data.user.userLevel);
-          setEmail(response.data.user.email);
-          setPassword(response.data.user.password);
-        }
-      } catch (error: any) {
-        console.log(error);
-      }
-    }
-  };
-
-  const updateUser = async () => {
-    try {
-      let url = `http://localhost:8080/api/users/${userId}`;
-
-      let response = await axios.put(url, {
-        name: userName,
-        userLevel: level,
-        email: email,
-        password: password,
-      });
-
-      if (response.data.success) {
-        setNotif(true);
-        setError(false);
-        setMessage(response.data.success);
-      }
-    } catch (error: any) {
-      setNotif(true);
-      setError(true);
-      setMessage(error.response.data.error);
-    }
-  };
+  const navigate = useNavigate();
 
   const addUser = async () => {
     try {
@@ -100,48 +40,25 @@ const UserForm = ({
     }
   };
 
-  useEffect(() => {
-    getUser();
-  }, []);
-
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 bottom-0 w-full min-h-[100svh] bg-black/50 flex items-start justify-start p-4 overflow-y-auto font-DM z-20">
-        <div className="w-full min-h-full flex flex-col items-center justify-center">
-          {/* card */}
-          <div className="w-full lg:w-2/6 bg-[#FCFCFC] p-6 rounded-xl">
-            <div className="w-full flex flex-row justify-between items-center space-x-4 pb-6">
-              <div className="flex flex-row items-center justify-start space-x-2 w-1/2">
-                <div className="p-2 rounded-full flex items-center justify-center bg-gradient-to-tr from-[#466600] to-[#699900]">
-                  <RiFolder6Line color="white" size={14} />
-                </div>
-                <div className="w-3/5 flex flex-row space-x-1 ">
-                  <p className="w-full text-xs font-semibold truncate">
-                    {userId ? "Edit User Information" : "Add New User"}
-                  </p>
-                </div>
+      <div className="w-full h-[100svh] flex flex-col items-center justify-center bg-[url('./assets/Home.jpg')] bg-cover bg-center font-DM">
+        <div className="w-full h-full flex flex-row items-center justify-center bg-gradient-to-tr from-black/75 to-black/50 p-6">
+          <div className="w-5/6 lg:w-1/6 flex flex-col items-center justify-center p-6 rounded-xl bg-white space-y-6">
+            <div className="w-full flex flex-col items-center justify-center space-y-2">
+              {/* logo */}
+              <div className="w-full flex items-center justify-center">
+                <img src={Logo} alt="" className="h-[80px] w-[80px]" />
               </div>
-              <div className="flex flex-row items-center justify-center space-x-2">
-                <div
-                  className="p-2 rounded-full bg-[#EDEDED] cursor-pointer"
-                  onClick={() => {
-                    if (userId) {
-                      updateUser();
-                    } else {
-                      addUser();
-                    }
-                  }}
-                >
-                  <RiCheckLine size={16} />
-                </div>
-                <div
-                  className="p-2 rounded-full bg-[#EDEDED] cursor-pointer"
-                  onClick={() => onClose()}
-                >
-                  <RiCloseLine size={16} />
-                </div>
+              {/* header */}
+              <div className="w-full flex flex-col items-center justify-center">
+                <p className="text-sm font-semibold">Welcome Back</p>
+                <p className="text-xs font-normal text-[#6E6E6E]">
+                  login to your account
+                </p>
               </div>
             </div>
+            {/* inputs */}
             <div className="w-full flex flex-col items-center justify-center gap-4">
               <div className="w-full flex flex-col items-start justify-center gap-2">
                 <p className="text-xs font-normal">User Name</p>
@@ -192,13 +109,27 @@ const UserForm = ({
                 <p className="text-xs font-normal">Level</p>
                 <div className="w-full flex flex-row items-center justify-between px-6 py-3.5 bg-[#EDEDED] rounded-xl">
                   <p className="text-xs font-normal">{level}</p>
-                  <RiRefreshLine
-                    size={16}
-                    className="cursor-pointer"
-                    onClick={toggleLevel}
-                  />
+                  <RiRefreshLine size={16} className="cursor-pointer" />
                 </div>
               </div>
+            </div>
+            {/* button */}
+            <div
+              className="w-full flex flex-row items-center justify-center py-2.5 bg-gradient-to-tr from-[#466600] to-[#699900] rounded-lg cursor-pointer"
+              onClick={addUser}
+            >
+              <p className="text-xs font-semibold text-white">Register</p>
+            </div>
+            <div className="w-full flex flex-row items-center justify-center gap-1">
+              <p className="text-xs font-normal text-[#6E6E6E]">
+                Already have an account?
+              </p>
+              <p
+                className="text-xs font-semibold text-[#466600] cursor-pointer"
+                onClick={() => navigate("/")}
+              >
+                Login
+              </p>
             </div>
           </div>
         </div>
@@ -208,9 +139,7 @@ const UserForm = ({
           message={message}
           onClose={() => {
             setNotif(false);
-            if (!error) {
-              onClose();
-            }
+            navigate("/");
           }}
         />
       )}
@@ -218,4 +147,4 @@ const UserForm = ({
   );
 };
 
-export default UserForm;
+export default Register;

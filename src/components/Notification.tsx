@@ -6,7 +6,7 @@ const Notification = ({
   onClose: () => void;
 }) => {
   return (
-    <div className="fixed top-0 left-0 w-full h-[100svh] bg-black/50 flex items-center justify-center font-DM p-6 z-30">
+    <div className="fixed top-0 left-0 w-full h-[100svh] bg-black/50 flex items-center justify-center font-DM p-6 z-40">
       <div className="w-3/4 lg:w-[260px] flex flex-col items-center justify-center rounded-xl bg-[#FAFAFA] overflow-hidden">
         <div className="w-full flex flex-row items-center justify-between shadow-xl shadow-black/10 px-6 py-4">
           <p className="text-sm font-semibold">Notification</p>

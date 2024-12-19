@@ -1,10 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navigation from "../components/Navigation";
 import Man from "../assets/Man.jpg";
 import ProfileForm from "../components/profile/ProfileForm";
+import axios from "axios";
 
 const Profile = () => {
   const [profileForm, setProfileForm] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [level, setLevel] = useState("user");
+
+  const getProfileInfo = async () => {
+    const user = localStorage.getItem("user");
+
+    if (user) {
+      const currentUser = JSON.parse(user);
+
+      if (currentUser) {
+        try {
+          let url = `http://localhost:8080/api/users/${currentUser._id}`;
+
+          let response = await axios.get(url);
+
+          if (response.data.success === true) {
+            setUserName(response.data.user.name);
+            setLevel(response.data.user.userLevel);
+            setEmail(response.data.user.email);
+            setPassword(response.data.user.password);
+          }
+        } catch (error: any) {
+          console.log(error);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    getProfileInfo();
+  }, []);
 
   return (
     <>
@@ -47,27 +81,32 @@ const Profile = () => {
             </div>
             <div className="w-full flex flex-row items-center justify-between">
               <p className="text-xs font-normal">User Name:</p>
-              <p className="text-xs font-normal text-[#6E6E6E]">User Name</p>
+              <p className="text-xs font-normal text-[#6E6E6E]">{userName}</p>
             </div>
 
             <div className="w-full flex flex-row items-center justify-between">
               <p className="text-xs font-normal">E-mail:</p>
-              <p className="text-xs font-normal text-[#6E6E6E]">
-                test@gmail.com
-              </p>
+              <p className="text-xs font-normal text-[#6E6E6E]">{email}</p>
             </div>
             <div className="w-full flex flex-row items-center justify-between">
               <p className="text-xs font-normal">Password</p>
-              <p className="text-xs font-normal text-[#6E6E6E]">password</p>
+              <p className="text-xs font-normal text-[#6E6E6E]">{password}</p>
             </div>
             <div className="w-full flex flex-row items-center justify-between">
               <p className="text-xs font-normal">Level:</p>
-              <p className="text-xs font-normal text-[#6E6E6E]">Admin</p>
+              <p className="text-xs font-normal text-[#6E6E6E]">{level}</p>
             </div>
           </div>
         </div>
       </div>
-      {profileForm && <ProfileForm onClose={() => setProfileForm(false)} />}
+      {profileForm && (
+        <ProfileForm
+          onClose={() => {
+            setProfileForm(false);
+            getProfileInfo();
+          }}
+        />
+      )}
     </>
   );
 };
