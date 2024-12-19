@@ -52,9 +52,9 @@ const Register = () => {
               </div>
               {/* header */}
               <div className="w-full flex flex-col items-center justify-center">
-                <p className="text-sm font-semibold">Welcome Back</p>
+                <p className="text-sm font-semibold">Create Account</p>
                 <p className="text-xs font-normal text-[#6E6E6E]">
-                  login to your account
+                  fill all fields to continue
                 </p>
               </div>
             </div>
