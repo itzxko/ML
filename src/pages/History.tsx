@@ -11,6 +11,7 @@ import { BarChart, LineChart } from "@mui/x-charts";
 import { useEffect, useState } from "react";
 import HistoryForm from "../components/history/HistoryForm";
 import axios from "axios";
+import Notification from "../components/Notification";
 
 const History = () => {
   const [historyform, setHistoryForm] = useState(false);
@@ -19,6 +20,8 @@ const History = () => {
     null
   );
   const [selected, setSelected] = useState<any | null>(null);
+  const [notif, setNotif] = useState(false);
+  const [message, setMessage] = useState("");
 
   const getHistory = async () => {
     try {
@@ -31,6 +34,22 @@ const History = () => {
       }
     } catch (error: any) {
       setHistory([]);
+    }
+  };
+
+  const deletePrediction = async (predictionId: string) => {
+    if (predictionId) {
+      try {
+        let url = `http://localhost:8080/api/predictions/${predictionId}`;
+
+        let response = await axios.delete(url);
+
+        if (response.data.success) setMessage(response.data.success);
+        setNotif(true);
+      } catch (error: any) {
+        setMessage(error.response.data.error);
+        setNotif(true);
+      }
     }
   };
 
@@ -155,14 +174,24 @@ const History = () => {
                       </p>
                     </div>
                   </div>
-                  <div
-                    className="p-2 rounded-full flex items-center justify-center bg-[#EDEDED] cursor-pointer"
-                    onClick={() => {
-                      setHistoryForm(true);
-                      setSelectedPrediction(prediction);
-                    }}
-                  >
-                    <RiEdit2Line size={16} color="black" />
+                  <div className="flex flex-row gap-2">
+                    <div
+                      className="p-2 rounded-full flex items-center justify-center bg-[#EDEDED] cursor-pointer"
+                      onClick={() => {
+                        setHistoryForm(true);
+                        setSelectedPrediction(prediction);
+                      }}
+                    >
+                      <RiEdit2Line size={16} color="black" />
+                    </div>
+                    <div
+                      className="p-2 rounded-full flex items-center justify-center bg-[#EDEDED] cursor-pointer"
+                      onClick={() => {
+                        deletePrediction(prediction._id);
+                      }}
+                    >
+                      <RiDeleteBin7Line size={16} color="black" />
+                    </div>
                   </div>
                 </div>
 
@@ -250,6 +279,16 @@ const History = () => {
           </div>
         </div>
       </div>
+      {notif && (
+        <Notification
+          message={message}
+          onClose={() => {
+            setNotif(false);
+            getHistory();
+            setSelected(null);
+          }}
+        />
+      )}
       {historyform && (
         <HistoryForm
           data={selectedPrediction}
