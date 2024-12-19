@@ -63,21 +63,34 @@ const Dashboard = () => {
   };
 
   const generatePrediction = async () => {
+    let numTemp = Number(temperature);
+    let numSpeed = Number(windSpeed);
+    let numHumid = Number(humidity);
+    let numPopulation = Number(population);
+    let numGDP = Number(GDP);
+
+    const requestData = {
+      "Report Date": reportDate,
+      "Load Time": loadTime,
+      "Load Weight": 0,
+      Temperature: numTemp,
+      WindSpeed: numSpeed,
+      Humidity: numHumid,
+      Population: numPopulation,
+      "GDP Per Capita": numGDP,
+    };
+
     try {
       let url = `http://localhost:8080/api/predictions/predict`;
 
-      let response = await axios.post(url, {
-        "Report Date": reportDate,
-        "Load Time": loadTime,
-        "Load Weight": loadWeight,
-        Temperature: temperature,
-        WindSpeed: windSpeed,
-        Humidity: humidity,
-        Population: population,
-        "GDP Per Capita": GDP,
+      let response = await axios.post(url, requestData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
       if (response.data.success === true) {
+        console.log(response.data.data);
         await setData(response.data.data);
         setPredictionPage(true);
       }
