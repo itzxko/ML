@@ -5,6 +5,8 @@ import Profile from "./pages/Profile";
 import Users from "./pages/Users";
 import History from "./pages/History";
 import Register from "./pages/Register";
+import Trucks from "./pages/Trucks";
+import Charts from "./pages/Charts";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
       <Route path="/users" element={<Users />} />
       <Route path="/history" element={<History />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/trucks" element={<Trucks />} />
+      <Route path="/charts" element={<Charts />} />
     </Routes>
   );
 }

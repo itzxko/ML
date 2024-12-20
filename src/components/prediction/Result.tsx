@@ -28,7 +28,7 @@ const Result = ({
       let response = await axios.post(url, {
         reportDate: input.reportDate,
         loadTime: input.loadTime,
-        predictedLoadWeight: data.predictedLoadWeight,
+        predictedLoadWeight: data.result.predictedLoadWeight,
         temperature: input.temperature,
         windSpeed: input.windSpeed,
         humidity: input.humidity,
@@ -73,7 +73,9 @@ const Result = ({
                     Predicted Load Weight:
                   </p>
                   <p className="text-xs font-semibold">
-                    {data ? data.predictedLoadWeight : "No Data"}
+                    {data
+                      ? data.result.predictedLoadWeight.toFixed(2)
+                      : "No Data"}
                   </p>
                 </div>
                 <div className="w-full flex flex-row px-6 py-3 rounded-xl bg-[#EDEDED] items-center justify-between gap-2">
@@ -81,7 +83,9 @@ const Result = ({
                     Predicted Load Weight Min:
                   </p>
                   <p className="text-xs font-semibold">
-                    {data ? data.predictedLoadWeightMin : "No Data"}
+                    {data
+                      ? data.result.predictedLoadWeightMin.toFixed(2)
+                      : "No Data"}
                   </p>
                 </div>
                 <div className="w-full flex flex-row px-6 py-3 rounded-xl bg-[#EDEDED] items-center justify-between gap-2">
@@ -89,9 +93,43 @@ const Result = ({
                     Predicted Load Weight Max:
                   </p>
                   <p className="text-xs font-semibold">
-                    {data ? data.predictedLoadWeightMax : "No Data"}
+                    {data
+                      ? data.result.predictedLoadWeightMax.toFixed(2)
+                      : "No Data"}
                   </p>
                 </div>
+              </div>
+            </div>
+            <div className="w-full flex flex-col items-center justify-center gap-4">
+              <div className="w-full flex flex-row justify-between items-center space-x-4">
+                <div className="flex flex-row items-center justify-start space-x-2 w-1/2">
+                  <div className="p-2 rounded-full flex items-center justify-center bg-gradient-to-tr from-[#466600] to-[#699900]">
+                    <RiDnaLine color="white" size={14} />
+                  </div>
+                  <div className="w-3/5 flex flex-row space-x-1 ">
+                    <p className="w-full text-xs font-semibold truncate">
+                      Truck Recommendations
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full flex flex-col items-center justify-center gap-4">
+                {data.recommendedTrucks.length > 0 &&
+                  data.recommendedTrucks.map((truck: any) => (
+                    <div
+                      className="w-full flex flex-row px-6 py-3 rounded-xl bg-[#EDEDED] items-center justify-between gap-2"
+                      key={truck.truckName}
+                    >
+                      <p className="text-xs font-normal text-[#6E6E6E]">
+                        {truck.truckName}
+                      </p>
+                      <p className="text-xs font-semibold">
+                        {`${truck.loadAssigned.toFixed(2)}/${
+                          truck.truckCapacity
+                        }`}
+                      </p>
+                    </div>
+                  ))}
               </div>
             </div>
 

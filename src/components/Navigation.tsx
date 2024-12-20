@@ -47,6 +47,10 @@ const Navigation = () => {
       setActiveRoute("dashboard");
     } else if (location.pathname.includes("/history")) {
       setActiveRoute("history");
+    } else if (location.pathname.includes("/trucks")) {
+      setActiveRoute("trucks");
+    } else if (location.pathname.includes("/charts")) {
+      setActiveRoute("charts");
     } else if (location.pathname.includes("/users")) {
       setActiveRoute("users");
     } else if (location.pathname.includes("/profile")) {
@@ -84,19 +88,44 @@ const Navigation = () => {
                 <i className="ri-home-3-line text-md text-[#6E6E6E]"></i>
               </div>
             )}
-            {activeRoute === "history" ? (
+
+            {userLevel !== "user" && (
               <div
                 className="cursor-pointer"
                 onClick={() => navigate("/history")}
               >
-                <i className="ri-calendar-fill text-md text-[#050301]"></i>
+                {activeRoute === "history" ? (
+                  <i className="ri-calendar-fill text-md text-[#050301]"></i>
+                ) : (
+                  <i className="ri-calendar-line text-md text-[#6E6E6E]"></i>
+                )}
+              </div>
+            )}
+            {activeRoute === "charts" ? (
+              <div
+                className="cursor-pointer"
+                onClick={() => navigate("/charts")}
+              >
+                <i className="ri-line-chart-fill text-md text-[#050301]"></i>
               </div>
             ) : (
               <div
                 className="cursor-pointer"
-                onClick={() => navigate("/history")}
+                onClick={() => navigate("/charts")}
               >
-                <i className="ri-calendar-line text-md text-[#6E6E6E]"></i>
+                <i className="ri-line-chart-line text-md text-[#6E6E6E]"></i>
+              </div>
+            )}
+            {userLevel !== "user" && (
+              <div
+                className="cursor-pointer"
+                onClick={() => navigate("/trucks")}
+              >
+                {activeRoute === "trucks" ? (
+                  <i className="ri-truck-fill text-md text-[#050301]"></i>
+                ) : (
+                  <i className="ri-truck-line text-md text-[#6E6E6E]"></i>
+                )}
               </div>
             )}
             {userLevel !== "user" && (
